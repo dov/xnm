@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include "xnm.h"
 #include "xnm_private.h"
 
@@ -229,6 +230,45 @@ int xnm_value_get_double (XnmValue *xnm_value,
   return ret;
 }
 
+int xnm_value_get_bool (XnmValue *xnm_value,
+                        const char *key,
+                        /* output */
+                        gboolean *val_bool)
+{
+  int ret;
+  XnmValue *xnm_value_bool;
+  const gchar *strval; // A shortcut
+  ret = xnm_value_get(xnm_value,
+                      key,
+                      /* output */
+                      &xnm_value_bool);
+  if (ret != 0)
+    return ret;
+
+  // Should this return an error??
+  if (xnm_value_bool->type != XNM_STRING)
+    return -1;
+
+  strval = xnm_value_bool->value.string->string;
+
+  /* Everything that starts with T,Y, or 1 is true. Everything
+     else is false.
+  */
+  if (strval[0]=='T'
+      || strval[0] == 't'
+      || strval[0] == 'y'
+      || strval[0] == 'Y'
+      || strval[0] == '1'
+      )
+    *val_bool = TRUE;
+  else
+    *val_bool = FALSE;
+  
+  xnm_value_unref(xnm_value_bool);
+
+  return ret;
+}
+
 int
 xnm_value_get_array_length (XnmValue *xnm_value,
                             const char *key)
@@ -251,4 +291,55 @@ xnm_value_get_array_length (XnmValue *xnm_value,
 
   xnm_value_unref(xnm_value_array);
   return 0;
+}
+
+int
+xnm_value_get_values(XnmValue *xnm_value,
+                     ...)
+{
+  int ret = 0;
+  va_list ap;
+  va_start(ap, xnm_value);
+
+  while(1)
+    {
+      const gchar *key = va_arg(ap, const gchar *);
+      if (!key)
+        break;
+      XnmValueType type = va_arg(ap, XnmValueType);
+      switch (type)
+        {
+        case XNM_GET_INT :
+          xnm_value_get_int(xnm_value,
+                            key,
+                            /* output */
+                            va_arg(ap, gint*));
+          break;
+        case XNM_GET_STRING:
+          xnm_value_get_const_string(xnm_value,
+                                     key,
+                                     /* output */
+                                     va_arg(ap, const gchar**));
+          break;
+        case XNM_GET_BOOL:
+          xnm_value_get_bool(xnm_value,
+                             key,
+                             /* output */
+                             va_arg(ap, gboolean *));
+          break;
+        case XNM_GET_DOUBLE:
+          xnm_value_get_double(xnm_value,
+                               key,
+                               /* output */
+                               va_arg(ap, gdouble *));
+          break;
+        default:
+          printf("This shouldn't happen type=%d!\n", type);
+          exit(0);
+          break;
+        }
+    }
+  va_end(ap);
+
+  return ret;
 }

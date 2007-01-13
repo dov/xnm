@@ -31,3 +31,9 @@
 * The error version will be available only for value version.
 
 * Rewrite the parser to make it thread safe.
+
+* Introduce variable interpolation inside double quotes.
+
+* Support binary chunk values by the following syntax:
+
+    <size=345667>...345667 bytes follow...

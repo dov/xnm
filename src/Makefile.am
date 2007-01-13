@@ -5,13 +5,15 @@ INCLUDES = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	$(PACKAGE_CFLAGS)
 
-AM_CFLAGS =\
-	 -Wall\
-	 -g
+libxnm_1_0_la_inc_HEADERS = xnm.h 
+libxnm_1_0_la_incdir = $(includedir)/xnm
+
+EXTRA_DIST = xnm_private.h
 
 lib_LTLIBRARIES = libxnm-1.0.la
 libxnm_1_0_la_LIBADD =		\
 	$(GLIB_LIBS)			
+
 
 libxnm_1_0_la_SOURCES =      \
         xnm-parser.y         \

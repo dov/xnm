@@ -48,12 +48,28 @@ enum {
   XNM_ERROR_KEY_NOT_FOUND = 2
 };
 
+/**
+ * The possible types of a XnmValue.
+ * 
+ */
 typedef enum  {
   XNM_UNKNOWN,
   XNM_TABLE,
   XNM_ARRAY,
-  XNM_STRING
+  XNM_STRING,
+  XNM_BINARY 
 } XnmValueType;
+
+/**
+ * Values used when retrieving.
+ * 
+ */
+enum {
+  XNM_GET_INT,
+  XNM_GET_DOUBLE,
+  XNM_GET_STRING,
+  XNM_GET_BOOL
+};
 
 /* Forward declarations */
 struct xnm_string_struct;
@@ -175,6 +191,7 @@ int           xnm_value_get_string       (XnmValue *xnm_value_tree,
  */
 int           xnm_value_get_const_string  (XnmValue *xnm_value_tree,
                                            const char *key,
+
                                            /* output */
                                            const gchar **const_val_string);
 
@@ -192,6 +209,17 @@ int           xnm_value_get_int           (XnmValue *xnm_value,
                                            const char *key,
                                            /* output */
                                            int *val_int);
+
+
+/**
+ * Retrieve a boolean value from an xnm_value. The boolean value is
+ * considered true if it starts with 't','T','y','Y', or 1. Everything
+ * else is false.
+ */
+int xnm_value_get_bool (XnmValue *xnm_value,
+                        const char *key,
+                        /* output */
+                        gboolean *val_bool);
 
 /** 
  * Add an xnm_value into an XnmValue of type array.
@@ -297,6 +325,17 @@ xnm_value_set_key_value_printf(XnmValue *xnm_value_parent,
 int
 xnm_value_get_array_length (XnmValue *xnm_value,
                             const char *key);
+
+/** 
+ * Get a list of values in one call. 
+ * 
+ * @param xnm_value 
+ * 
+ * @return 
+ */
+int
+xnm_value_get_values(XnmValue *xnm_value,
+                     ...);
 
 /** 
  * Parse a string in XNM syntax.

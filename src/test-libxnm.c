@@ -42,6 +42,8 @@ const char test_string[] =
     "}\n"
     "array=[3 23 5]\n"
     "deep=[[[[[[[[[[{a=>42}]]]]]]]]]]\n"
+    "pineapple => ananas\n"
+    "reflection=> T"
     ;
 
 const gchar *create_test_file()
@@ -61,6 +63,7 @@ int main()
     XnmValue *val = NULL;
     int ret;
     int val_int;
+    gboolean val_bool = FALSE;
     const gchar *val_const_gchar;
     GError *error = NULL;
 
@@ -78,9 +81,21 @@ int main()
     xnm_value_table_set_key_value_string(val, "foo", "bar");
     ret = xnm_value_get_const_string(val, "foo", &val_const_gchar);
     count_ok += test_ok(strcmp(val_const_gchar, "bar")==0,                  6);
+    ret = xnm_value_get_values(val,
+                               "junk/tires", XNM_GET_INT, &val_int,
+                               "pineapple", XNM_GET_STRING, &val_const_gchar,
+                               "reflection", XNM_GET_BOOL, &val_bool,
+                               NULL);
+    count_ok += test_ok(ret== 0,                                            7);
+    count_ok += test_ok(val_int == 42,                                      8);
+    count_ok += test_ok(strcmp(val_const_gchar, "ananas")==0,               9);
+    count_ok += test_ok(val_bool == TRUE,                                  10);
+    
     xnm_value_table_set_key_value_string(val, "junk", "43");
     ret = xnm_value_get_const_string(val, "junk", &val_const_gchar);
-    count_ok += test_ok(strcmp(val_const_gchar, "43")==0,                   7);
+    count_ok += test_ok(strcmp(val_const_gchar, "43")==0,                  11);
+
+                         
     
     xnm_value_unref(val);
 
