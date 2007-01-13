@@ -1,0 +1,33 @@
+* Create stupidly simple retrieval functions, as such:
+
+    xml_value_get_string(val,
+                         key,
+                         // output
+                         &s);
+
+  which will:
+
+    * ignore errors in key
+    * if a success match is found, then s is freed if non-zero,
+      and the new value is assigned to s.
+
+* Similarly
+
+    xml_value_get_int(val,
+                      key,
+                      /* output */
+                      &s);
+    xml_value_get_double(val,
+                    	  key,
+                          /* output */
+                          &s);
+    xml_value_get_bool(val,
+                       key,
+                       /* output */
+                       &s);
+  These three will override the value in s iff the key is succesfully
+  matched.
+
+* The error version will be available only for value version.
+
+* Rewrite the parser to make it thread safe.

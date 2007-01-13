@@ -1,0 +1,45 @@
+libxnm is a library for parsing the XNM format. For more info about
+the xnm format see below. libxnm is a c-library for parsing, in
+memory storage, and output of the xnm format.
+
+THE XNM FORMAT 
+
+XNM stands for (Xnm is Not a Markup language) in the spirit of
+recursive definitions common in the GNU world. xnm is a simple
+recursively defined serialization syntax that is well suited to be
+used as a storage format for any program storing or communicating
+complex datastructures. In contrast to the XML standard, XNM was built
+to be as concise as possible. It is built upon three types string,
+tables, and arrays. Here is a short string in Xnm format:
+
+   home_dir : "/home/dir"
+   path : ["/usr/bin" "/usr/local/bin" "/etc"]
+
+Here is another more complex example:
+
+   objects : [
+     {
+       type : contour
+       points : [ {x:0 y:1} {x:3.5 y:2.1} {x:5 y:8} ]
+       fill : T
+       color : { R:200 G:0 B:0 }
+       name : "A red contour"
+     }
+     {
+       type : polygon
+       center : {x=10 y=50}
+       sides : 5
+       rotation : 32
+     }
+   ]
+
+Other similar projects are YAML and JSON.
+
+USAGE
+
+Documentation is in progress. Meanwhile see:
+
+    src/xnm-parse-and-query.c
+
+for example usage.
+
