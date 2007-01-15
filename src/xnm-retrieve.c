@@ -175,15 +175,252 @@ xnm_value_get_const_string       (XnmValue *xnm_value_tree,
   if (xnm_value_string->type == XNM_STRING)
     *string_val = xnm_value_string->value.string->string;
   else
-    return -1;
+    return ret=-1;
 
+  xnm_value_unref(xnm_value_string);
+  
+  return ret;
+}
+
+int
+xnm_value_get_binary       (XnmValue *xnm_value_tree,
+                            const char *key,
+                            // output
+                            const gchar **buf,
+                            int *len
+                            )
+{
+  int ret = 0;
+  XnmValue *xnm_value;
+  ret = xnm_value_get(xnm_value_tree,
+                      key,
+                      /* output */
+                      &xnm_value);
+  if (ret != 0)
+    return ret;
+
+  if (xnm_value->type == XNM_BINARY)
+    {
+      *buf = xnm_value->value.binary->buf;
+      *len = xnm_value->value.binary->len;
+    }
+  else if (xnm_value->type == XNM_STRING)
+    {
+      *buf = xnm_value->value.string->string;
+      *len = strlen(*buf);
+    }
+  else
+    ret = -1;
+
+  xnm_value_unref(xnm_value);
+  
   return ret;
 }
 
 int xnm_value_get_int (XnmValue *xnm_value,
                        const char *key,
                        /* output */
-                       int *val_int)
+                       gint *val_int)
+{
+  int ret;
+  XnmValue *xnm_value_int;
+  ret = xnm_value_get(xnm_value,
+                      key,
+                      /* output */
+                      &xnm_value_int);
+  if (ret != 0)
+    return ret;
+
+  // Should this return an error??
+  if (xnm_value_int->type != XNM_STRING)
+    return -1;
+  
+  *val_int = atoi(xnm_value_int->value.string->string);
+
+  xnm_value_unref(xnm_value_int);
+
+  return ret;
+}
+
+int xnm_value_get_int8 (XnmValue *xnm_value,
+                        const char *key,
+                        /* output */
+                        gint8 *val_int)
+{
+  int ret;
+  XnmValue *xnm_value_int;
+  ret = xnm_value_get(xnm_value,
+                      key,
+                      /* output */
+                      &xnm_value_int);
+  if (ret != 0)
+    return ret;
+
+  // Should this return an error??
+  if (xnm_value_int->type != XNM_STRING)
+    return -1;
+  
+  *val_int = atoi(xnm_value_int->value.string->string);
+
+  xnm_value_unref(xnm_value_int);
+
+  return ret;
+}
+
+int xnm_value_get_int16 (XnmValue *xnm_value,
+                        const char *key,
+                        /* output */
+                        gint16 *val_int)
+{
+  int ret;
+  XnmValue *xnm_value_int;
+  ret = xnm_value_get(xnm_value,
+                      key,
+                      /* output */
+                      &xnm_value_int);
+  if (ret != 0)
+    return ret;
+
+  // Should this return an error??
+  if (xnm_value_int->type != XNM_STRING)
+    return -1;
+  
+  *val_int = atoi(xnm_value_int->value.string->string);
+
+  xnm_value_unref(xnm_value_int);
+
+  return ret;
+}
+
+int xnm_value_get_int32 (XnmValue *xnm_value,
+                        const char *key,
+                        /* output */
+                        gint32 *val_int)
+{
+  int ret;
+  XnmValue *xnm_value_int;
+  ret = xnm_value_get(xnm_value,
+                      key,
+                      /* output */
+                      &xnm_value_int);
+  if (ret != 0)
+    return ret;
+
+  // Should this return an error??
+  if (xnm_value_int->type != XNM_STRING)
+    return -1;
+  
+  *val_int = atoi(xnm_value_int->value.string->string);
+
+  xnm_value_unref(xnm_value_int);
+
+  return ret;
+}
+
+int xnm_value_get_int64 (XnmValue *xnm_value,
+                        const char *key,
+                        /* output */
+                        gint64 *val_int)
+{
+  int ret;
+  XnmValue *xnm_value_int;
+  ret = xnm_value_get(xnm_value,
+                      key,
+                      /* output */
+                      &xnm_value_int);
+  if (ret != 0)
+    return ret;
+
+  // Should this return an error??
+  if (xnm_value_int->type != XNM_STRING)
+    return -1;
+  
+  *val_int = atoll(xnm_value_int->value.string->string);
+
+  xnm_value_unref(xnm_value_int);
+
+  return ret;
+}
+
+int xnm_value_get_uint8 (XnmValue *xnm_value,
+                         const char *key,
+                         /* output */
+                         guint8 *val_int)
+{
+  int ret;
+  XnmValue *xnm_value_int;
+  ret = xnm_value_get(xnm_value,
+                      key,
+                      /* output */
+                      &xnm_value_int);
+  if (ret != 0)
+    return ret;
+
+  // Should this return an error??
+  if (xnm_value_int->type != XNM_STRING)
+    return -1;
+  
+  *val_int = atoi(xnm_value_int->value.string->string);
+
+  xnm_value_unref(xnm_value_int);
+
+  return ret;
+}
+
+int xnm_value_get_uint32 (XnmValue *xnm_value,
+                         const char *key,
+                         /* output */
+                         guint32 *val_int)
+{
+  int ret;
+  XnmValue *xnm_value_int;
+  ret = xnm_value_get(xnm_value,
+                      key,
+                      /* output */
+                      &xnm_value_int);
+  if (ret != 0)
+    return ret;
+
+  // Should this return an error??
+  if (xnm_value_int->type != XNM_STRING)
+    return -1;
+  
+  *val_int = atoi(xnm_value_int->value.string->string);
+
+  xnm_value_unref(xnm_value_int);
+
+  return ret;
+}
+
+int xnm_value_get_float (XnmValue *xnm_value,
+                         const char *key,
+                         /* output */
+                         gfloat *val_float)
+{
+  int ret;
+  XnmValue *xnm_value_int;
+  ret = xnm_value_get(xnm_value,
+                      key,
+                      /* output */
+                      &xnm_value_int);
+  if (ret != 0)
+    return ret;
+
+  // Should this return an error??
+  if (xnm_value_int->type != XNM_STRING)
+    return -1;
+  
+  *val_float = atof(xnm_value_int->value.string->string);
+
+  xnm_value_unref(xnm_value_int);
+
+  return ret;
+}
+
+int xnm_value_get_uint16 (XnmValue *xnm_value,
+                         const char *key,
+                         /* output */
+                         guint16 *val_int)
 {
   int ret;
   XnmValue *xnm_value_int;
@@ -309,6 +546,48 @@ xnm_value_get_values(XnmValue *xnm_value,
       XnmValueType type = va_arg(ap, XnmValueType);
       switch (type)
         {
+        case XNM_GET_INT8 :
+          xnm_value_get_int8(xnm_value,
+                              key,
+                              /* output */
+                              va_arg(ap, gint8*));
+          break;
+        case XNM_GET_INT16 :
+          xnm_value_get_int16(xnm_value,
+                              key,
+                              /* output */
+                              va_arg(ap, gint16*));
+          break;
+        case XNM_GET_INT32 :
+          xnm_value_get_int32(xnm_value,
+                              key,
+                              /* output */
+                              va_arg(ap, gint32*));
+          break;
+        case XNM_GET_UINT8 :
+          xnm_value_get_uint8(xnm_value,
+                              key,
+                              /* output */
+                              va_arg(ap, gint8*));
+          break;
+        case XNM_GET_UINT16 :
+          xnm_value_get_int16(xnm_value,
+                              key,
+                              /* output */
+                              va_arg(ap, gint16*));
+          break;
+        case XNM_GET_UINT32 :
+          xnm_value_get_int32(xnm_value,
+                              key,
+                              /* output */
+                              va_arg(ap, guint32*));
+          break;
+        case XNM_GET_INT64 :
+          xnm_value_get_int64(xnm_value,
+                              key,
+                              /* output */
+                              va_arg(ap, gint64*));
+          break;
         case XNM_GET_INT :
           xnm_value_get_int(xnm_value,
                             key,
@@ -332,6 +611,12 @@ xnm_value_get_values(XnmValue *xnm_value,
                                key,
                                /* output */
                                va_arg(ap, gdouble *));
+          break;
+        case XNM_GET_FLOAT:
+          xnm_value_get_float(xnm_value,
+                               key,
+                               /* output */
+                               va_arg(ap, gfloat *));
           break;
         default:
           printf("This shouldn't happen type=%d!\n", type);

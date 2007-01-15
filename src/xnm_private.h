@@ -34,11 +34,23 @@ typedef struct xnm_string_struct {
     gchar *string;
 } XnmString;
 
-XnmString *xnm_string_new              (const char *string);
+XnmString *xnm_string_new              (const gchar *string);
 void          xnm_string_ref              (XnmString *xnm_string);
 void          xnm_string_unref            (XnmString *xnm_string);
 char *        xnm_string_export_to_string (XnmString *xnm_string);
-char *        xnm_string_export_to_xml    (XnmString *xnm_string);
+
+/* Binaries are similar, but contain length as well* */
+typedef struct xnm_binary_struct {
+    int ref_count;
+    gchar *buf;
+    int len;
+} XnmBinary;
+
+XnmBinary *xnm_binary_new                 (const gchar *data, size_t len);
+void          xnm_binary_ref              (XnmBinary *xnm_string);
+void          xnm_binary_unref            (XnmBinary *xnm_string);
+
+/* No export to string for binary as it is meaningless. */
 
 /* Arrays are GPtrArray */
 typedef struct xnm_array_struct {
@@ -94,6 +106,7 @@ char         *xnm_table_export_to_xml   (XnmTable *xnm_table);
 XnmValue * xnm_value_new_from_string       (XnmString *string);
 XnmValue * xnm_value_new_from_array        (XnmArray *array);
 XnmValue * xnm_value_new_from_table        (XnmTable *table);
+XnmValue * xnm_value_new_from_binary       (XnmBinary *binary);
 
 /* Utility routine for extracting keys */
 int xnm_key_split(const char *key_string,

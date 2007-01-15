@@ -30,7 +30,47 @@
  * 
  * @brief  The libxnm header file.
  * 
- * 
+ * The libxnm library stores the xnm data in a tree of XnmValue's
+ * where each XnmValue dynamically may contain a string, a binary
+ * buffer, an array or a table.
+ *
+ * Values are accessed by their keys which is a slash separated
+ * path description from the root to a value. Tables are dereferenced
+ * by the key name, and arrays by the array index enclosed in square
+ * brackets.
+ *
+ * Given a xnm structure that looks like:
+ *
+ * \code 
+ *
+ *   gaim => {
+ *     gtk=> {
+ *       browsers=> {
+ *         place=>F
+ * 	   command=>"xterm -e lynx %s"
+ * 	   browser=>firefox
+ * 	   new_window=>F
+ *       }
+ *       plugins => [
+ *         '/usr/lib/gaim/gaimrc.so'
+ * 	   '/usr/lib/gaim/ssl-nss.so'
+ * 	   '/usr/lib/gaim/ssl.so'
+ *       ]
+ *     }
+ *     pos => [ {x=>0 y=>0} {x=>100 y=0} {x=>100 y=>50 } ]
+ *   }
+ * \endcode
+ *
+ * Here are a couple of valid keys
+ *
+ *   - gaim/gtk/browser/command
+ *   - gaim/pos/[0]/x
+ *
+ * Most commands are made to ignore undefined keys.
+ *
+ * libxnm provides several methods for extracting values from an xnm tree
+ * that all start with xnm_get .
+ *
  */
 
 #ifndef XNM_H
@@ -61,33 +101,46 @@ typedef enum  {
 } XnmValueType;
 
 /**
- * Values used when retrieving.
+ * Values used when retrieving. Note that binary values may not be
+ * extracted this way, as they need to have the length of them returned
+ * as well.
  * 
  */
-enum {
+typedef enum {
+  XNM_GET_UINT8,
+  XNM_GET_UINT16,
+  XNM_GET_UINT,
+  XNM_GET_UINT32,
+  XNM_GET_INT8,
+  XNM_GET_INT16,
   XNM_GET_INT,
+  XNM_GET_INT32,
+  XNM_GET_INT64,
+  XNM_GET_FLOAT,
   XNM_GET_DOUBLE,
   XNM_GET_STRING,
   XNM_GET_BOOL
-};
+} XnmValueGetType;
 
 /* Forward declarations */
 struct xnm_string_struct;
 struct xnm_table_struct;
 struct xnm_array_struct;
+struct xnm_bin_struct;
 
 /**
  * The xnmValue should be considered an opaque reference.
  * 
  */
 typedef struct {
-    int ref_count;
+    int ref_count;              /**< Reference count of the XnmValue */
     XnmValueType type;
 
     union {
 	struct xnm_table_struct *table;
 	struct xnm_array_struct *array;
 	struct xnm_string_struct *string;
+        struct xnm_binary_struct *binary;
     } value;
 } XnmValue;
 
@@ -115,6 +168,15 @@ XnmValue * xnm_value_new_table             ();
  * @return 
  */
 XnmValue * xnm_value_new_array             ();
+
+
+/**
+ * Allocate a new XnmValue with the type binary and initiate it with
+ * the data in buf.
+ * 
+ */
+XnmValue * xnm_value_new_binary            (const gchar *buf, size_t size);
+
 
 /** 
  * Increase the reference count of xnm_value.
@@ -168,13 +230,13 @@ int           xnm_value_get              (XnmValue *xnm_value_tree,
  * is found then string_value is freed, and the string is copied
  * into string_val. Otherwise, string_val is left untouched.
  * 
- * @param xnm_value 
+ * @param xnm_value
  * @param key 
  * @param string_val 
  * 
  * @return 0 if value retrieved, -1 if value not found, -2 if key syntax error.
  */
-int           xnm_value_get_string       (XnmValue *xnm_value_tree,
+int           xnm_value_get_string       (XnmValue *xnm_value,
 					  const char *key,
 					  // output
                                           gchar **string_val);
@@ -196,10 +258,10 @@ int           xnm_value_get_const_string  (XnmValue *xnm_value_tree,
                                            const gchar **const_val_string);
 
 /** 
- * This value retrieves a value from an xnm_value_tree and turns it
+ * This value retrieves a value from an xnm_value and turns it
  * into an integer with atoi().
  * 
- * @param xnm_value_tree 
+ * @param xnm_value
  * @param key 
  * @retval val_int
  * 
@@ -242,10 +304,10 @@ int xnm_value_array_push_string(XnmValue * xnm_value_array,
 
 
 /** 
- * Push a string into an xnm value of type array.
+ * Push an integer value into an xnm value of type array.
  * 
  * @param xnm_value_array 
- * @param string 
+ * @param value_int 
  * 
  * @return 
  */
@@ -269,9 +331,12 @@ int xnm_value_array_push_printf(XnmValue * xnm_value_array,
  * Add a xnm_value to a xnm table. This function increases the reference
  * count of the xnm_value.
  *
- * (TBD: Does this function support hierarchical keys?)
+ * Note! This function does not yet support hierarchical keys. To set an
+ * a key that is not a direct parent of xnm_value_tree, the leaf
+ * xnm_value table must first be retrieved, and this function then
+ * called on that value.
  * 
- * @param xnm_value_parent 
+ * @param xnm_value_tree 
  * @param key 
  * @param xnm_value 
  * 
@@ -318,17 +383,24 @@ xnm_value_set_key_value_printf(XnmValue *xnm_value_parent,
  * 
  * @param xnm_value 
  * @param key 
- * @param error 
  * 
- * @return Length of array if node found. -1 if key not found.
+ * @return Length of array if node found. -1 if key not found or if
+ *         xnm_value is not an array.
  */
 int
 xnm_value_get_array_length (XnmValue *xnm_value,
                             const char *key);
 
 /** 
- * Get a list of values in one call. 
- * 
+ * Get a list of values in one call. This function is very convenient
+ * for extracting multiple values in one call. It takes as argument
+ * a NULL terminated vararg list, where each value extraction is
+ * controlled by three arguments:
+ *
+ *   - The key - A still containing the path to the node to get info from
+ *   - The type the third argument. This value is of type |XnmValueGetType|.
+ *   - A pointer to where to store the value.
+ *
  * @param xnm_value 
  * 
  * @return 

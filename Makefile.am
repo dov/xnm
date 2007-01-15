@@ -13,4 +13,6 @@ libxnmdoc_DATA = \
 
 EXTRA_DIST = autogen.sh $(DX_CONFIG) $(libxnmdoc_DATA) doxygen-doc/html
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libxnm.pc
 

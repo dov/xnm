@@ -62,10 +62,11 @@ int main()
     int count_ok = 0, count_failed;
     XnmValue *val = NULL;
     int ret;
-    int val_int;
+    int val_int, len;
     gboolean val_bool = FALSE;
     const gchar *val_const_gchar;
     GError *error = NULL;
+    GString *gs;
 
     ret = xnm_parse_string(test_string,
                            // output
@@ -94,11 +95,38 @@ int main()
     xnm_value_table_set_key_value_string(val, "junk", "43");
     ret = xnm_value_get_const_string(val, "junk", &val_const_gchar);
     count_ok += test_ok(strcmp(val_const_gchar, "43")==0,                  11);
-
-                         
     
     xnm_value_unref(val);
 
+    // Testing binary
+    gs = g_string_new("");
+    g_string_append(gs, "bin = <size=5>abcd");
+    g_string_append_c(gs, 0);
+    g_string_append(gs, "foo = bar\n");
+    ret = xnm_parse_string_len(gs->str,
+                               gs->len,
+                               // output
+                               &val,
+                               &error);
+    g_string_free(gs, TRUE);
+    count_ok += test_ok(error == NULL && val != NULL,                      12);
+    xnm_value_get_binary(val,
+                         "bin",
+                         &val_const_gchar,
+                         &len);
+    count_ok += test_ok(len == 5,                                          13);
+    count_ok += test_ok(val_const_gchar[0]=='a'
+                        && val_const_gchar[1]=='b'
+                        && val_const_gchar[2]=='c'
+                        && val_const_gchar[3]=='d'
+                        && val_const_gchar[4]==0,                          14);
+    xnm_value_get_const_string(val,
+                               "foo",
+                               &val_const_gchar);
+    count_ok += test_ok(strcmp(val_const_gchar, "bar") == 0,               15);
+
+    xnm_value_unref(val);
+    
     /*======================================================================
     //  End of tests. Create summary.
     //----------------------------------------------------------------------*/

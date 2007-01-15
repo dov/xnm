@@ -113,7 +113,7 @@ values : value
        |
 ;
 
-scalar_or_hash_or_array : scalar | hash | array
+scalar_or_hash_or_array : scalar | hash | array | binary
 ;
 
 value : scalar_or_hash_or_array {
@@ -176,6 +176,42 @@ assignments
   
   parse_top = g_ptr_array_index(parse_stack, parse_stack->len-1);
   xnm_value_ref(parse_top);
+}
+;
+
+binary : '<' {
+  if (parse_top)
+    xnm_value_unref(parse_top);
+  parse_top = xnm_value_new_table();
+  g_ptr_array_add(parse_stack, parse_top);
+  xnm_value_ref(parse_top);
+}
+assignments
+'>' {
+  XnmValue *bin_val; /* Storage of binary value */
+  int bin_size=-1;
+  if (xnm_val)
+    xnm_value_unref(xnm_val);
+  xnm_val = parse_top;
+
+  if (parse_top)
+    xnm_value_unref(parse_top);
+  g_ptr_array_remove_index(parse_stack, parse_stack->len-1);
+  
+  parse_top = g_ptr_array_index(parse_stack, parse_stack->len-1);
+  xnm_value_ref(parse_top);
+
+  /* Extract the size */
+  xnm_value_get_int(xnm_val, "size",
+                    &bin_size);
+  if (bin_size < 0)
+    // raise an error. How do you do that?;
+    bin_size = 0;
+  bin_val = xnm_value_new_binary(xnm_str + xnm_pos, bin_size);
+  xnm_pos += bin_size;
+
+  xnm_value_unref(xnm_val);
+  xnm_val = bin_val;
 }
 ;
 
@@ -380,4 +416,3 @@ xnm_parse_file(const gchar *filename,
                               xnm_value,
                               error);
 }
-

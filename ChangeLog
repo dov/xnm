@@ -1,3 +1,23 @@
+2007-01-15  Dov Grobgeld  <dov.grobgeld@gmail.com>
+
+	* configure.in: Bumped version to 0.1.1 .
+
+	* xnm.h, xnm-retrieve.h: Added types XNM_GET_INT8, XNM_GET_INT16,
+	XNM_GET_INT32, XNM_GET_INT64, XNM_GET_UINT8, XNM_GET_UINT16,
+	XNM_GET_UINT32, XNM_GET_FLOAT.
+
+	* xnm-retrieve.c: Fixed memory leaks in xnm_value_get_const_string()
+	xnm_value_get_binary(), and xnm_value_unref (for xnm_binary values).
+
+	* configure.in, Makefile.am, libxnm.pc.in: Added package config file.
+
+2007-01-14  Dov Grobgeld  <dov.grobgeld@gmail.com>
+
+	* test-libxnm.c : Added testing of embedded binary types.
+
+	* xnm.h, xnm_private.h, xnm-struct.c, xnm-retrieve.c : Added
+	support for binary types!
+
 2007-01-13  Dov Grobgeld  <dov.grobgeld@gmail.com>
 
 	* Initial release 0.1.0!

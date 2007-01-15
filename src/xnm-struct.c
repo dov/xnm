@@ -77,6 +77,15 @@ XnmValue * xnm_value_new_string(const gchar *string)
   return xnm_value;
 }
 
+XnmValue * xnm_value_new_binary(const gchar *buf, size_t size)
+{
+  XnmBinary *xnm_binary = xnm_binary_new(buf, size);
+  XnmValue *xnm_value = xnm_value_new_from_binary(xnm_binary);
+  xnm_binary_unref(xnm_binary);
+
+  return xnm_value;
+}
+
 XnmValue *xnm_value_new_from_array(XnmArray *array)
 {
   XnmValue *xnm_value = g_new(XnmValue, 1);
@@ -172,6 +181,8 @@ void xnm_value_unref          (XnmValue *xnm_value)
       case XNM_STRING:
 	xnm_string_unref(xnm_value->value.string);
 	break;
+      case XNM_BINARY:
+        xnm_binary_unref(xnm_value->value.binary);
       default:
 	break;
       }
@@ -318,6 +329,67 @@ char *xnm_string_export_to_xml(XnmString *xnm_string)
   return g_strdup_printf("<str val=\"%s\"/>\n", xnm_string->string);
 }
 #endif
+
+/*======================================================================
+//   xnm_binary
+//----------------------------------------------------------------------
+*/
+XnmValue * xnm_value_new_from_binary(XnmBinary *binary)
+{
+  XnmValue *xnm_value = g_new(XnmValue, 1);
+  xnm_value->type = XNM_BINARY;
+  xnm_binary_ref(binary);
+  xnm_value->value.binary = binary;
+
+#if DEBUG_REF
+  xnm_value->ref_count = 0;
+  xnm_value_ref(xnm_value);
+#else
+  xnm_value->ref_count = 1;
+#endif
+
+  return xnm_value;
+}
+
+XnmBinary * xnm_binary_new(const gchar *data, size_t len)
+{
+  XnmBinary *xnm_binary = g_new(XnmBinary, 1);
+  xnm_binary->buf = g_new(gchar, len);
+  xnm_binary->len = len;
+  memcpy(xnm_binary->buf, data, len);
+
+#ifdef DEBUG_REF
+  xnm_binary->ref_count = 0;
+  xnm_binary_ref(xnm_string);
+#else
+  xnm_binary->ref_count = 1;
+#endif
+
+  return xnm_binary;
+}
+
+void xnm_binary_ref(XnmBinary *xnm_binary)
+{
+  xnm_binary->ref_count++;
+#if DEBUG_REF
+  printf("xnm_string_ref  : ref=%d val=0x%08x s=%s\n", xnm_string->ref_count, (int)xnm_string, xnm_string->string);
+#endif
+}
+
+void xnm_binary_unref(XnmBinary *xnm_binary)
+{
+  xnm_binary->ref_count--;
+#if DEBUG_REF
+  printf("xnm_string_unref: ref=%d val=0x%08x\n", xnm_string->ref_count, (int)xnm_string);
+#endif
+
+  if (xnm_binary->ref_count == 0)
+    {
+      g_free(xnm_binary->buf);
+      g_free(xnm_binary);
+    }
+}
+
 
 /*======================================================================
 //   xnm_array
