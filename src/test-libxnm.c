@@ -91,10 +91,12 @@ int main()
     count_ok += test_ok(val_int == 42,                                      8);
     count_ok += test_ok(strcmp(val_const_gchar, "ananas")==0,               9);
     count_ok += test_ok(val_bool == TRUE,                                  10);
+
+    count_ok += test_ok(xnm_value_get_array_length(val, "array") == 3,     11);
     
     xnm_value_table_set_key_value_string(val, "junk", "43");
     ret = xnm_value_get_const_string(val, "junk", &val_const_gchar);
-    count_ok += test_ok(strcmp(val_const_gchar, "43")==0,                  11);
+    count_ok += test_ok(strcmp(val_const_gchar, "43")==0,                  12);
     
     xnm_value_unref(val);
 
@@ -109,21 +111,21 @@ int main()
                                &val,
                                &error);
     g_string_free(gs, TRUE);
-    count_ok += test_ok(error == NULL && val != NULL,                      12);
+    count_ok += test_ok(error == NULL && val != NULL,                      13);
     xnm_value_get_binary(val,
                          "bin",
                          &val_const_gchar,
                          &len);
-    count_ok += test_ok(len == 5,                                          13);
+    count_ok += test_ok(len == 5,                                          14);
     count_ok += test_ok(val_const_gchar[0]=='a'
                         && val_const_gchar[1]=='b'
                         && val_const_gchar[2]=='c'
                         && val_const_gchar[3]=='d'
-                        && val_const_gchar[4]==0,                          14);
+                        && val_const_gchar[4]==0,                          15);
     xnm_value_get_const_string(val,
                                "foo",
                                &val_const_gchar);
-    count_ok += test_ok(strcmp(val_const_gchar, "bar") == 0,               15);
+    count_ok += test_ok(strcmp(val_const_gchar, "bar") == 0,               16);
 
     xnm_value_unref(val);
     

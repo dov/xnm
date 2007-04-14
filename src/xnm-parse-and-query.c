@@ -60,19 +60,34 @@ int main(int argc, char **argv)
   gchar *filename;
   XnmValue *root;
   GError *error = NULL;
+  gchar *key = NULL;
+  gboolean do_get_len = FALSE;
   
   while(argp < argc && argv[argp][0] == '-') {
     char *S_ = argv[argp++];
     
-    CASE("-help") {
-      printf("xnm-parse-and-query - Parse and query xnm strings\n\n"
-             "Syntax:\n"
-             "    xnm [] ...\n"
-             "\n"
-             "Options:\n"
-             "    -x x    Foo\n");
-      exit(0);
-    }
+    CASE("-help")
+      {
+        printf("xnm-parse-and-query - Parse and query xnm strings\n\n"
+               "Syntax:\n"
+               "    xnm-parse-and-query [-key key] [-len] [file]\n"
+               "\n"
+               "Options:\n"
+               "    -key key    Foo\n"
+               "    -len        Get len of arrays\n"
+               );
+        exit(0);
+      }
+    CASE("-key")
+      {
+        key = argv[argp++];
+        continue;
+      }
+    CASE("-len")
+      {
+        do_get_len++;
+        continue;
+      }
     die("Unknown option %s!\n", S_);
   }
   
@@ -95,12 +110,33 @@ int main(int argc, char **argv)
     {
       fprintf(stderr, "parse error: %s\n", error->message);
       g_error_free(error);
+      exit(-1);
+    }
+
+  if (do_get_len)
+    {
+      gchar *k = key;
+      if (k == NULL)
+        k = ""; // Root
+      int len = xnm_value_get_array_length(root, k);
+      printf("len = %d\n", len);
+                                           
+    }
+  else if (key)
+    {
+      XnmValue *val;
+      xnm_value_get(root,
+                    key,
+                    // output
+                    &val);
+      print_xnm_value(val);
+      xnm_value_unref(val);
     }
   else
     {
       print_xnm_value(root);
-      xnm_value_unref(root);
     }
+  xnm_value_unref(root);
   
   exit(0);
   return(0);

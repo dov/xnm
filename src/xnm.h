@@ -76,6 +76,11 @@
 #ifndef XNM_H
 #define XNM_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <glib.h>
 
 /**
@@ -458,5 +463,9 @@ xnm_parse_file(const gchar *filenam,
                // output
                XnmValue **xnm_value,
                GError **error);
+
+#ifdef  __cplusplus
+}
+#endif
 
 #endif

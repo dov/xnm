@@ -864,8 +864,8 @@ int xnm_key_split(const char *key_string,
     char *colon_pos, *slash_pos, *lbrack_pos;
 
     /* Allow for both ':' and '/' as separators */
-    colon_pos = index(key_string, ':');
-    slash_pos = index(key_string, '/');
+    colon_pos = strchr(key_string, ':');
+    slash_pos = strchr(key_string, '/');
 
     /* Assume only one of them is in use at a time... */
     if (!colon_pos)
@@ -886,10 +886,10 @@ int xnm_key_split(const char *key_string,
       }
 
     /* Check if this is array access syntax */
-    lbrack_pos = index(*key_head, '[');
+    lbrack_pos = strchr(*key_head, '[');
     if (lbrack_pos != NULL)
       {
-	char *rbrack_pos = index(*key_head, ']');
+	char *rbrack_pos = strchr(*key_head, ']');
 	char *ps = lbrack_pos+1;
 	char *pd = *key_head;
 

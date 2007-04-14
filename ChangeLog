@@ -1,3 +1,16 @@
+2007-04-15  Dov Grobgeld  <dov.grobgeld@gmail.com>
+
+	* xnm-struct.c: Changed index() to strchr()
+
+2007-04-14  Dov Grobgeld  <dov.grobgeld@gmail.com>
+
+	* test-libxnm.c: Added test for get_array_length().
+
+	* xnm-retrieve.c: xnm_value_get_array_length() was not returning
+	the correct value.
+
+	* xnm.h: Added C++ ifdef's
+
 2007-01-15  Dov Grobgeld  <dov.grobgeld@gmail.com>
 
 	* configure.in: Bumped version to 0.1.1 .

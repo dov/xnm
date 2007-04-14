@@ -527,7 +527,8 @@ xnm_value_get_array_length (XnmValue *xnm_value,
   ret = xnm_value_array->value.array->array->len;
 
   xnm_value_unref(xnm_value_array);
-  return 0;
+
+  return ret;
 }
 
 int
