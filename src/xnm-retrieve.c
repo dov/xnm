@@ -36,6 +36,13 @@ int xnm_value_get (XnmValue *xnm_value_tree,
   char *key_head, *key_tail;
   gboolean is_leaf, is_array;
 
+  // Getting an empty key is a noop
+  if (key[0] == '\0') {
+      *xnm_value = xnm_value_tree;
+      xnm_value_ref(*xnm_value);
+      return ret;
+  }
+  
   // Check if it is an endnode
   if (xnm_value_tree->type == XNM_STRING)
     {
@@ -122,11 +129,19 @@ xnm_value_get_string       (XnmValue *xnm_value_tree,
                             gchar **string_val)
 {
   int ret = 0;
-  XnmValue *xnm_value_string;
+  XnmValue *xnm_value_string = NULL;
+
+  if (strlen(key)==0) {
+      *string_val = xnm_value_export_to_string(xnm_value_tree);
+      return 0;
+  }
+      
   ret = xnm_value_get(xnm_value_tree,
                       key,
                       /* output */
                       &xnm_value_string);
+  if (xnm_value_string == NULL)
+      return -1;
   if (ret != 0)
     return ret;
 
@@ -240,6 +255,26 @@ int xnm_value_get_int (XnmValue *xnm_value,
   xnm_value_unref(xnm_value_int);
 
   return ret;
+}
+
+XnmValueType xnm_value_get_type (XnmValue *xnm_value,
+                                 const char *key)
+{
+  XnmValueType ret_type = XNM_UNKNOWN;
+
+  XnmValue *xnm_val;
+  int ret = xnm_value_get(xnm_value,
+                          key,
+                          /* output */
+                          &xnm_val);
+  if (ret != 0)
+    return XNM_UNKNOWN;
+
+  ret_type = xnm_val->type;
+  
+  xnm_value_unref(xnm_val);
+
+  return ret_type;
 }
 
 int xnm_value_get_int8 (XnmValue *xnm_value,
@@ -532,6 +567,34 @@ xnm_value_get_array_length (XnmValue *xnm_value,
 }
 
 int
+xnm_value_get_table_key_list (XnmValue *xnm_value,
+                              const char *key,
+                              // output
+                              const GPtrArray **key_list
+                              )
+{
+  int ret = 0;
+  XnmValue *xnm_value_table;
+
+  ret = xnm_value_get(xnm_value,
+                      key,
+                      /* output */
+                      &xnm_value_table);
+
+  if (ret != 0)
+    return ret;
+  
+  if (!xnm_value_table || xnm_value_table->type != XNM_TABLE)
+    return -1;
+
+  *key_list = xnm_table_get_key_list(xnm_value_table->value.table);
+
+  xnm_value_unref(xnm_value_table);
+
+  return ret;
+}
+
+int
 xnm_value_get_values(XnmValue *xnm_value,
                      ...)
 {
@@ -620,8 +683,8 @@ xnm_value_get_values(XnmValue *xnm_value,
                                va_arg(ap, gfloat *));
           break;
         default:
-          printf("This shouldn't happen type=%d!\n", type);
-          exit(0);
+          fprintf(stderr, "xnm-retrieve: This shouldn't never happen type=%d!\n", type);
+          ret=-1;
           break;
         }
     }

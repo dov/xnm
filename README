@@ -35,12 +35,26 @@ Here is another more complex example:
 
 Other similar projects are YAML and JSON.
 
+xnm also supports embedded binary strings as follows:
+
+bin => <size=7>ABC
+DEF
+
+This defines binary string of size 7 with the contents "ABC\nDEF". Binary
+strings may be retrieved through the following code:
+
+    const gchar *val_const_gchar;
+    xnm_value_get_binary(val,
+                         key,
+                         &val_const_gchar,
+                         &len);
+
+
 USAGE
 
 Documentation is in progress. Meanwhile see:
 
     src/xnm-parse-and-query.c
+    src/test-libxnm.c
 
 for example usage.
-
-

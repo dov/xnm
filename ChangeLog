@@ -1,3 +1,23 @@
+2008-12-30  Dov Grobgeld  <dov.grobgeld@gmail.com>
+
+        * xnm-retrieve.c : Erased exit() call as it failed on lint.
+
+2008-12-25  Dov Grobgeld  <dov.grobgeld@gmail.com>
+
+        * Makefile.am, configure.in, etc : Removed automatic doxygen
+        generation as I could no longer get it to work.
+
+        * configure.in: Bumped version to 0.1.2.
+
+        * xnm-struct.c: Added xnm_table_get_key_list() to return the
+        keys of a table.
+
+        * xnm-retrieve.c: Added new method xnm_value_get_table_key_list() to
+        retrieve the keys of a table.
+
+        * xnm-retrieve.c : Made getting an empty key from a value return
+        the value.
+
 2007-04-15  Dov Grobgeld  <dov.grobgeld@gmail.com>
 
 	* xnm-struct.c: Changed index() to strchr()

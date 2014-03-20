@@ -1,6 +1,7 @@
+AUTOMAKE_OPTIONS = gnu 
 SUBDIRS = src 
 
-include aminclude.am
+#include aminclude.am
 
 libxnmdocdir = ${prefix}/doc/libxnm
 libxnmdoc_DATA = \

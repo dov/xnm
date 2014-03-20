@@ -1,7 +1,7 @@
 /* libxnm
  * xnm.h:
  *
- * Copyright (C) 2007 Dov Grobgeld
+ * Copyright (C) 2007-2014 Dov Grobgeld
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -414,6 +414,23 @@ int
 xnm_value_get_values(XnmValue *xnm_value,
                      ...);
 
+
+/** 
+ * Get a list of all keys of a table.
+ * 
+ * @param xnm_value 
+ * @param key 
+ * @param key_list 
+ * 
+ * @return 
+ */
+int
+xnm_value_get_table_key_list (XnmValue *xnm_value,
+                              const char *key,
+                              // output
+                              const GPtrArray **key_list
+                              );
+
 /** 
  * Parse a string in XNM syntax.
  * 
@@ -463,6 +480,16 @@ xnm_parse_file(const gchar *filenam,
                // output
                XnmValue **xnm_value,
                GError **error);
+
+
+/**
+ * Get the type of a key. The value XNM_TYPE_UNKNOWN means that the key
+ * wasn't defined.
+ *
+ * @param key
+ */
+XnmValueType           xnm_value_get_type (XnmValue *xnm_value,
+                                           const char *key);
 
 #ifdef  __cplusplus
 }

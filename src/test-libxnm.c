@@ -43,7 +43,9 @@ const char test_string[] =
     "array=[3 23 5]\n"
     "deep=[[[[[[[[[[{a=>42}]]]]]]]]]]\n"
     "pineapple => ananas\n"
-    "reflection=> T"
+    "mybin : <size=7>ABC\n"
+    "DEF\n"
+    "reflection=> T\n"
     ;
 
 const gchar *create_test_file()

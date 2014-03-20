@@ -101,6 +101,7 @@ void          xnm_table_set_key_value   (XnmTable *xnm_table,
 					 XnmValue *xnm_value);
 char         *xnm_table_export_to_string(XnmTable *xnm_table);
 char         *xnm_table_export_to_xml   (XnmTable *xnm_table);    
+const GPtrArray *xnm_table_get_key_list(XnmTable *xnm_table);
 
 /* Declarations placed here when all types are defined */
 XnmValue * xnm_value_new_from_string       (XnmString *string);
@@ -115,6 +116,5 @@ int xnm_key_split(const char *key_string,
 		  gboolean *is_array,
 		  char **key_head,
 		  char **key_tail);
-
 
 #endif /* XNM_PRIVATE */
