@@ -288,6 +288,14 @@ int xnm_value_get_bool (XnmValue *xnm_value,
                         /* output */
                         gboolean *val_bool);
 
+/**
+ * Retrieve a double value from an xnm_value. 
+ */
+int xnm_value_get_double (XnmValue *xnm_value,
+                          const char *key,
+                          /* output */
+                          gdouble *val_double);
+
 /** 
  * Add an xnm_value into an XnmValue of type array.
  * 
