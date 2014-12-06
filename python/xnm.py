@@ -105,7 +105,7 @@ def internal_dumps(s, indent=2):
         ret += [string_protect(s)]
     else:
         raise Exception('Unsupported xnm type ' + str(type(s)))
-  return ' '.join(ret)
+    return ' '.join(ret)
 
 def dumps(s, indent=2):
     if type(s)!=dict:
