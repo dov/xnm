@@ -1,0 +1,16 @@
+import glob
+
+env = Environment()
+
+lib = env.Library('xnm-1.0',
+                  ['xnm-parse-and-query.c',
+                   'xnm-parser.y',
+                   'xnm-struct.c',
+                   'xnm-retrieve.c'])
+env.ParseConfig("pkg-config --cflags --libs glib-2.0")
+
+env.Alias("install",
+          [env.Install('/usr/local/lib',
+                       lib)],
+          [env.Install('/usr/local/include/xnm',
+                       ['xnm.h'])])

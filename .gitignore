@@ -1,0 +1,14 @@
+/src/.deps
+/autom4te.cache
+/src/.libs
+/src/.sconsign.dblite
+Makefile
+Makefile.in
+*.a
+*.la
+*.o
+*.lo
+*.exe
+*.obj
+/libxnm.pc
+/src/xnm-parser.c
