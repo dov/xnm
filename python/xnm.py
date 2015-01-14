@@ -87,7 +87,7 @@ def string_protect(s):
 
 def internal_dumps(s, indent=2):
     ret = []
-    if type(s)==dict:
+    if isinstance(s,dict):
         ret += ['{']
         for k,v in s.iteritems():
             ret += [ k + ' = ' + internal_dumps(v)]
@@ -101,14 +101,14 @@ def internal_dumps(s, indent=2):
         ret += ['%f'%s]
     elif type(s) == int:
         ret += ['%d'%s]
-    elif type(s) == str:
+    elif isinstance(s,str) or isinstance(s,unicode):
         ret += [string_protect(s)]
     else:
         raise Exception('Unsupported xnm type ' + str(type(s)))
     return ' '.join(ret)
 
 def dumps(s, indent=2):
-    if type(s)!=dict:
+    if not isinstance(s,dict):
         raise Exception('Top level of xnm must be a dict!')
 
     ret = []
