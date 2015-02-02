@@ -295,6 +295,9 @@ gchar *xnm_string_export_to_string(XnmString *xnm_string)
       case '{':
       case '}':
       case ']':
+      case '/':
+      case '\\':
+      case '\'':
         need_quotes = TRUE;
         g_string_append_c(exported_string, c);
         break;
