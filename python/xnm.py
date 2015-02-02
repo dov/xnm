@@ -20,6 +20,7 @@
 # An xnm module in python with an interface similar to json
 #
 from pyparsing import *
+import re
 
 # The following "magic" allows "dot access" to xnm files.
 class dotdict(dict):
@@ -80,9 +81,8 @@ def loads(s):
 
 
 def string_protect(s):
-    if ' ' in s:
+    if re.search(r'\W',s):
         return '"'+s+'"'
-    # TBD other support
     return s
 
 def internal_dumps(s, indent=2):
@@ -117,12 +117,14 @@ def dumps(s, indent=2):
     return '\n'.join(ret)
 
 if __name__=='__main__':
-    # Testing
-    s =  dumps({'a':3, 'b':[3,4,'bar baz']})
-    t = loads(s)
-    print t
-    print t.a,t.b
+#    # Testing
+#    s =  dumps({'a':3, 'b':[3,4,'bar baz']})
+#    t = loads(s)
+#    print t
+#    print t.a,t.b
 
     # s = open('test.xnm').read()
     # print loads(s)
+
+    print dumps({'foo': "the qui"})
     
