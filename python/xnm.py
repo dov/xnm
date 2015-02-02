@@ -20,15 +20,30 @@
 # An xnm module in python with an interface similar to json
 #
 from pyparsing import *
+import collections
 import re
 
 # The following "magic" allows "dot access" to xnm files.
 class dotdict(dict):
+    def __init__(self):
+        dict.__init__(self)
+        self._mykeys = {}
+        self._myorder = []
+
     def __getattr__(self, attr):
         return self.get(attr)
 
     def __dir__(self):
         return self.keys()
+
+    def __setitem__(self, k, v):
+        if not k in self.keys():
+            self._myorder.append(k)
+        dict.__setitem__(self,k,v)
+        
+    def iteritems(self):
+        for k in self._myorder:
+            yield k,self[k]
 
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
@@ -43,10 +58,13 @@ def convertNumbers(s,l,toks):
 def parsing_to_pod(results):
     if isinstance(results,ParseResults):
       if results.haskeys():
-        return dotdict({
-          k : parsing_to_pod(results[k])
-          for k in results.keys()
-        })
+          res = dotdict()
+
+          # Access as a list to get original order
+          for kv in results:
+              k = kv[0]
+              res[k] = parsing_to_pod(results[k])
+          return res
       else:
         return [
           parsing_to_pod(v) for v in results
@@ -85,17 +103,21 @@ def string_protect(s):
         return '"'+s+'"'
     return s
 
+def indent_string(s, indent=2):
+    sp=' '*indent
+    return '\n'.join([sp+v for v in s.split('\n')])
+
 def internal_dumps(s, indent=2):
     ret = []
     if isinstance(s,dict):
         ret += ['{']
         for k,v in s.iteritems():
-            ret += [ k + ' = ' + internal_dumps(v)]
+            ret += [ indent_string(k + ' = ' + internal_dumps(v)) ]
         ret += ['}']
     elif type(s) == list:
         ret += ['[']
         for v in s:
-            ret += [ internal_dumps(v)]
+            ret += [ indent_string(internal_dumps(v)) ]
         ret += [']']
     elif type(s) == float:
         ret += ['%f'%s]
@@ -105,7 +127,7 @@ def internal_dumps(s, indent=2):
         ret += [string_protect(s)]
     else:
         raise Exception('Unsupported xnm type ' + str(type(s)))
-    return ' '.join(ret)
+    return ('\n').join(ret)
 
 def dumps(s, indent=2):
     if not isinstance(s,dict):
@@ -113,7 +135,7 @@ def dumps(s, indent=2):
 
     ret = []
     for k,v in s.iteritems():
-        ret += [ k + ' = ' + internal_dumps(v)]
+        ret += [ k + ' = ' + internal_dumps(v, indent=indent)]
     return '\n'.join(ret)
 
 if __name__=='__main__':
@@ -126,5 +148,4 @@ if __name__=='__main__':
     # s = open('test.xnm').read()
     # print loads(s)
 
-    print dumps({'foo': "the qui"})
-    
+    open('/tmp/v.xnm','w').write(dumps(load(open('/tmp/fit_info.xnm'))))
