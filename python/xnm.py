@@ -77,7 +77,7 @@ def load(hdl):
 def loads(s):
     xnmString = (dblQuotedString.setParseAction( removeQuotes )
                  | sglQuotedString.setParseAction( removeQuotes )
-                 | Word(alphas + '_-', alphanums+'_-') )
+                 | Word(alphas + '_-', alphanums+'_-.') )
     xnmNumber = Combine( Optional('-')
                          + ( '0' | Word('123456789',nums) ) +
                         Optional( '.' + Word(nums) ) +
