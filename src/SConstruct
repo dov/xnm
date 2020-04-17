@@ -2,18 +2,44 @@ import glob
 
 env = Environment()
 
+if ARGUMENTS.get('mingw', 0) or ARGUMENTS.get('mingw64', 0):
+    if ARGUMENTS.get('mingw', 0):
+        env['HOST']='w32'
+        env['HOSTBITS']='32'
+        env['ARCH']='i686-w64-mingw32'
+        env['LIBGCCDLL'] = "libgcc_s_sjlj-1.dll"
+    elif ARGUMENTS.get('mingw64', 0):
+        env['HOST']='w64'
+        env['HOSTBITS']='64'
+        env['ARCH']='x86_64-w64-mingw32'
+        env['LIBGCCDLL'] = "libgcc_s_seh-1.dll"
+    env['CC']='${ARCH}-gcc'
+    env['CXX']='${ARCH}-g++'
+    env['AR']='${ARCH}-ar'
+    env['RANLIB']='${ARCH}-ranlib'
+#    env.ParseConfig("PKG_CONFIG_PATH=/usr/local/mingw32/lib/pkgconfig:/usr/i686-w64-mingw32/sys-root/mingw/lib/pkgconfig pkg-config --cflags --libs " )
+    env['OBJSUFFIX']=".obj"
+    env['PROGSUFFIX'] = ".exe"
+    env['LOCAL_DIR']='ming${HOST}'
+    env['PREFIX']='/usr/local/${LOCAL_DIR}'
+    env['PKGCONFIG'] = "env PKG_CONFIG_PATH=/usr/${ARCH}/sys-root/mingw/lib/pkgconfig:/usr/local/${LOCAL_DIR}/lib/pkgconfig pkg-config"
+else:
+    env['PKGCONFIG'] = 'pkg-config'
+
 lib = env.Library('xnm-1.0',
                   ['xnm-parser.y',
                    'xnm-struct.c',
                    'xnm-retrieve.c'])
-env.ParseConfig("pkg-config --cflags --libs glib-2.0")
+env.ParseConfig("${PKGCONFIG} --cflags --libs glib-2.0")
 
 env.Program('xnm-parse-and-query',
             ['xnm-parse-and-query.c',
               lib])
 
+include = ['xnm.h']
 env.Alias("install",
-          [env.Install('/usr/local/lib',
-                       lib)],
-          [env.Install('/usr/local/include/xnm',
-                       ['xnm.h'])])
+          [env.Install('${PREFIX}/lib',
+                       lib),
+           env.Install('${PREFIX}/include/xnm',
+                       include),
+           ])

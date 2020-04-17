@@ -87,11 +87,10 @@ extern "C"
  * Error definitions
  * 
  */
-enum {
-  XNM_ERROR = 0,
-  XNM_ERROR_SYNTAX_ERROR = 1,
-  XNM_ERROR_KEY_NOT_FOUND = 2
-};
+#define XNM_ERROR xnm_error_quark ()
+#define XNM_ERROR_SYNTAX_ERROR xnm_error_syntax_error_quark ()
+GQuark xnm_error_quark();
+GQuark xnm_error_syntax_error_quark();
 
 /**
  * The possible types of a XnmValue.

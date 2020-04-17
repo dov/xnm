@@ -29,6 +29,8 @@
 
 #undef DEBUG_REF 
 #undef DEBUG_REF_SHOW_VAL 
+G_DEFINE_QUARK (g-xnm-error-quark-quark, xnm_error)
+G_DEFINE_QUARK (g-xnm-error-syntax_error-quark-quark, xnm_error_syntax_error)
 
 static const int xnm_line_wrap = 50;;
 static gchar *indent_string(const gchar *s, int num_spaces);
@@ -582,9 +584,9 @@ char *xnm_array_export_to_string(XnmArray *xnm_array)
         {
           char *indented_s = indent_string(s, 2);
           if (value->type == XNM_TABLE) 
-            g_string_sprintfa(exported_string, "{\n%s}\n", indented_s);
+            g_string_append_printf(exported_string, "{\n%s}\n", indented_s);
           else if (value->type == XNM_ARRAY) 
-            g_string_sprintfa(exported_string, "[\n%s]\n", indented_s);
+            g_string_append_printf(exported_string, "[\n%s]\n", indented_s);
           g_free(indented_s);
         }
       else
@@ -603,7 +605,7 @@ char *xnm_array_export_to_string(XnmArray *xnm_array)
                 g_string_append(exported_string, " ");
             }
           else
-            g_string_sprintfa(exported_string, "%s\n", s);
+            g_string_append_printf(exported_string, "%s\n", s);
         }
 
       g_free(s);
@@ -796,19 +798,19 @@ char *xnm_table_export_to_string(XnmTable *xnm_table)
       g_assert(value != NULL);
 
       value_string = xnm_value_export_to_string(value);
-      g_string_sprintfa(exported_string, "%s : ", key);
+      g_string_append_printf(exported_string, "%s : ", key);
 
       if (value->type == XNM_TABLE || value->type == XNM_ARRAY)
         {
           gchar *indented_value_string = indent_string(value_string, 2);
           if (value->type == XNM_TABLE) 
-            g_string_sprintfa(exported_string, "{\n%s}\n", indented_value_string);
+            g_string_append_printf(exported_string, "{\n%s}\n", indented_value_string);
           else if (value->type == XNM_ARRAY) 
-            g_string_sprintfa(exported_string, "[\n%s]\n", indented_value_string);
+            g_string_append_printf(exported_string, "[\n%s]\n", indented_value_string);
           g_free(indented_value_string);
         }
       else
-        g_string_sprintfa(exported_string, "%s\n", value_string);
+        g_string_append_printf(exported_string, "%s\n", value_string);
 
       g_free(value_string);
       xnm_value_unref(value);
@@ -842,7 +844,7 @@ char *xnm_table_export_to_xml(XnmTable *xnm_table)
 
       value_string = xnm_value_export_to_xml(value);
       
-      g_string_sprintfa(exported_string,
+      g_string_append_printf(exported_string,
 			"<keyval key=\"%s\">\n"
 			"  %s"
 			"</keyval>\n", key, value_string);
