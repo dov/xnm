@@ -52,7 +52,7 @@ def convertNumbers(s,l,toks):
     n = toks[0]
     try:
         return int(n)
-    except ValueError, ve:
+    except ValueError as ve:
         return float(n)
         
 def parsing_to_pod(results):
@@ -142,7 +142,7 @@ if __name__=='__main__':
 #    # Testing
 #    s =  dumps({'a':3, 'b':[3,4,'bar baz']})
 #    t = loads(s)
-#    print t
+#    print(t)
 #    print t.a,t.b
 
     # s = open('test.xnm').read()
