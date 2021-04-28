@@ -76,12 +76,12 @@
 #ifndef XNM_H
 #define XNM_H
 
+#include <glib.h>
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include <glib.h>
 
 /**
  * Error definitions

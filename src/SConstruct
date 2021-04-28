@@ -25,6 +25,7 @@ if ARGUMENTS.get('mingw', 0) or ARGUMENTS.get('mingw64', 0):
     env['PKGCONFIG'] = "env PKG_CONFIG_PATH=/usr/${ARCH}/sys-root/mingw/lib/pkgconfig:/usr/local/${LOCAL_DIR}/lib/pkgconfig pkg-config"
 else:
     env['PKGCONFIG'] = 'pkg-config'
+    env['PREFIX']='/usr/local'
 
 lib = env.Library('xnm-1.0',
                   ['xnm-parser.y',

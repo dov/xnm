@@ -41,7 +41,7 @@ class dotdict(dict):
             self._myorder.append(k)
         dict.__setitem__(self,k,v)
         
-    def iteritems(self):
+    def items(self):
         for k in self._myorder:
             yield k,self[k]
 
@@ -111,7 +111,7 @@ def internal_dumps(s, indent=2):
     ret = []
     if isinstance(s,dict):
         ret += ['{']
-        for k,v in s.iteritems():
+        for k,v in s.items():
             ret += [ indent_string(k + ' = ' + internal_dumps(v)) ]
         ret += ['}']
     elif type(s) == list:
@@ -134,7 +134,7 @@ def dumps(s, indent=2):
         raise Exception('Top level of xnm must be a dict!')
 
     ret = []
-    for k,v in s.iteritems():
+    for k,v in s.items():
         ret += [ k + ' = ' + internal_dumps(v, indent=indent)]
     return '\n'.join(ret)
 
