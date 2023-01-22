@@ -30,6 +30,9 @@ class dotdict(dict):
         self._mykeys = {}
         self._myorder = []
 
+    def get(self, attr, default_value=None):
+        return super().get(attr)
+
     def __getattr__(self, attr):
         return self.get(attr)
 
@@ -41,6 +44,12 @@ class dotdict(dict):
             self._myorder.append(k)
         dict.__setitem__(self,k,v)
         
+    def __repr__(self):
+        return str({
+            k:v
+            for k,v in self.items()
+            if not k.startswith('_') })
+        
     def items(self):
         for k in self._myorder:
             yield k,self[k]
@@ -50,6 +59,7 @@ class dotdict(dict):
 
 def convertNumbers(s,l,toks):
     n = toks[0]
+    print(f'{n=}')
     try:
         return int(n)
     except ValueError as ve:
@@ -78,11 +88,12 @@ def loads(s):
     xnmString = (dblQuotedString.setParseAction( removeQuotes )
                  | sglQuotedString.setParseAction( removeQuotes )
                  | Word(alphas + '_-', alphanums+'_-.') )
-    xnmNumber = Combine( Optional('-')
+    xnmNumber = (Combine( Optional('-')
                          + ( '0' | Word('123456789',nums) ) +
                         Optional( '.' + Word(nums) ) +
                         Optional( Word('eE',exact=1)
                                   + Word(nums+'+-',nums) ) )
+                 | 'nan' | '-nan' | 'inf' | '-inf')
     xnmTable = Forward()
     xnmValue = Forward()
     xnmMembers = Forward()
@@ -99,7 +110,7 @@ def loads(s):
 
 
 def string_protect(s):
-    if re.search(r'\W',s):
+    if re.search(r'\W',s) or re.search(r'^\d*\D',s):
         return '"'+s+'"'
     return s
 
@@ -140,12 +151,16 @@ def dumps(s, indent=2):
 
 if __name__=='__main__':
 #    # Testing
-#    s =  dumps({'a':3, 'b':[3,4,'bar baz']})
-#    t = loads(s)
-#    print(t)
+    import numpy as np
+    s =  dumps({'a':3, 'b':[3,4,'bar baz'],'c':np.inf})
+    t = loads(s)
+    print(t)
 #    print t.a,t.b
 
     # s = open('test.xnm').read()
     # print loads(s)
 
-    open('/tmp/v.xnm','w').write(dumps(load(open('/tmp/fit_info.xnm'))))
+#    open('/tmp/v.xnm','w').write(dumps(load(open('/tmp/fit_info.xnm'))))
+#    with open('/home/dov/Hadassa/git-ws/dev/libs/ksfit/debug_point-115-25-24.xnm') as fh:
+#      doc = load(fh)
+      
