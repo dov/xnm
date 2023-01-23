@@ -59,7 +59,6 @@ class dotdict(dict):
 
 def convertNumbers(s,l,toks):
     n = toks[0]
-    print(f'{n=}')
     try:
         return int(n)
     except ValueError as ve:
