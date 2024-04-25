@@ -7,5 +7,4 @@ Name: libxnm
 Description: A XNM parsing library
 Version: @VERSION@
 Libs: -L${libdir} -lxnm-1.0
-Requires: glib-2.0
-Cflags: -I${includedir}/plis
+Requires: libplis glib-2.0
