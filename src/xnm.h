@@ -10,7 +10,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
@@ -47,14 +47,14 @@
  *     gtk=> {
  *       browsers=> {
  *         place=>F
- * 	   command=>"xterm -e lynx %s"
- * 	   browser=>firefox
- * 	   new_window=>F
+ *         command=>"xterm -e lynx %s"
+ *         browser=>firefox
+ *         new_window=>F
  *       }
  *       plugins => [
  *         '/usr/lib/gaim/gaimrc.so'
- * 	   '/usr/lib/gaim/ssl-nss.so'
- * 	   '/usr/lib/gaim/ssl.so'
+ *         '/usr/lib/gaim/ssl-nss.so'
+ *         '/usr/lib/gaim/ssl.so'
  *       ]
  *     }
  *     pos => [ {x=>0 y=>0} {x=>100 y=0} {x=>100 y=>50 } ]
@@ -141,9 +141,9 @@ typedef struct {
     XnmValueType type;
 
     union {
-	struct xnm_table_struct *table;
-	struct xnm_array_struct *array;
-	struct xnm_string_struct *string;
+        struct xnm_table_struct *table;
+        struct xnm_array_struct *array;
+        struct xnm_string_struct *string;
         struct xnm_binary_struct *binary;
     } value;
 } XnmValue;
@@ -225,9 +225,9 @@ gchar *       xnm_value_export_to_string (XnmValue *xnm_value);
  * @return 0 if value retrieved, -1 if value not found, -2 if key syntax error.
  */
 int           xnm_value_get              (XnmValue *xnm_value_tree,
-					  const char *key,
-					  // output
-					  XnmValue **xnm_value);
+                                          const char *key,
+                                          // output
+                                          XnmValue **xnm_value);
 
 /** 
  * This value retrieves a string from an xnm_value_tree. If the key
@@ -241,8 +241,8 @@ int           xnm_value_get              (XnmValue *xnm_value_tree,
  * @return 0 if value retrieved, -1 if value not found, -2 if key syntax error.
  */
 int           xnm_value_get_string       (XnmValue *xnm_value,
-					  const char *key,
-					  // output
+                                          const char *key,
+                                          // output
                                           gchar **string_val);
 
 /** 
@@ -437,6 +437,23 @@ xnm_value_get_table_key_list (XnmValue *xnm_value,
                               // output
                               const GPtrArray **key_list
                               );
+
+
+/**
+ * Get a binary value
+ *
+ * @param xnm_value
+ * @param key
+ * @param buf
+ * @param len
+ */
+int
+xnm_value_get_binary       (XnmValue *xnm_value,
+                            const char *key,
+                            // output
+                            const gchar **buf,
+                            int *len
+                            );
 
 /** 
  * Parse a string in XNM syntax.

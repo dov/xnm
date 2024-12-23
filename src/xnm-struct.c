@@ -316,13 +316,13 @@ gchar *xnm_string_export_to_string(XnmString *xnm_string)
   if (need_quotes)
     {
       g_string_append_c(exported_string, '"');
-      ret = exported_string->str;
-      g_string_free(exported_string, FALSE);
+      ret = g_string_free(exported_string, FALSE);
     }
   else
     {
       ret = g_strdup(&exported_string->str[1]);
-      g_string_free(exported_string, TRUE);
+      if (g_string_free(exported_string, TRUE)==NULL)
+          ; // shut up warning
     }
 
   return ret;
@@ -611,8 +611,7 @@ char *xnm_array_export_to_string(XnmArray *xnm_array)
       g_free(s);
     }
   
-  ret_string = exported_string->str;
-  g_string_free(exported_string, FALSE);
+  ret_string = g_string_free(exported_string, FALSE);
 
   return ret_string;
 }
@@ -637,8 +636,7 @@ char *xnm_array_export_to_xml(XnmArray *xnm_array)
     }
   g_string_append(exported_string, "</array>\n");
   
-  ret_string = exported_string->str;
-  g_string_free(exported_string, FALSE);
+  ret_string = g_string_free(exported_string, FALSE);
 
   return ret_string;
 }
@@ -816,8 +814,7 @@ char *xnm_table_export_to_string(XnmTable *xnm_table)
       xnm_value_unref(value);
     }
 
-  ret_string = exported_string->str;
-  g_string_free(exported_string, FALSE);
+  ret_string = g_string_free(exported_string, FALSE);
     
   return ret_string;
 }
@@ -852,8 +849,7 @@ char *xnm_table_export_to_xml(XnmTable *xnm_table)
     }
   g_string_append(exported_string, "</table>");
 
-  ret_string = exported_string->str;
-  g_string_free(exported_string, FALSE);
+  ret_string = g_string_free(exported_string, FALSE);
     
   return ret_string;
 }
@@ -966,9 +962,7 @@ static gchar *indent_string(const gchar *s, int num_spaces)
       g_string_append_c(indented_string, s[i]);
     }
 
-  ret = indented_string->str;
-  g_string_free(indented_string, FALSE);
-  g_string_free(indent_space, TRUE);
+  ret = g_string_free(indented_string, FALSE);
 
   return ret;
 }

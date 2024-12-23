@@ -160,6 +160,13 @@ if __name__=='__main__':
     # print loads(s)
 
 #    open('/tmp/v.xnm','w').write(dumps(load(open('/tmp/fit_info.xnm'))))
+<<<<<<< Updated upstream
 #    with open('/home/dov/Hadassa/git-ws/dev/libs/ksfit/debug_point-115-25-24.xnm') as fh:
 #      doc = load(fh)
+=======
+    with open('/terra/space/Consulting/DDE/data/RSNA_CASE_19/1.3.6.1.4.1.12201.345051891942.101.20160216083741.1/fit_info.xnm') as fh:
+      doc = load(fh)
+    print(dumps(doc))
+    
+>>>>>>> Stashed changes
       

@@ -164,8 +164,7 @@ xnm_value_get_string       (XnmValue *xnm_value_tree,
           g_string_append(gs,"}");
         }
       g_free(serialize);
-      *string_val = gs->str;
-      g_string_free(gs, FALSE);
+      *string_val = g_string_free(gs, FALSE);
     }
 
   xnm_value_unref(xnm_value_string);
@@ -607,7 +606,7 @@ xnm_value_get_values(XnmValue *xnm_value,
       const gchar *key = va_arg(ap, const gchar *);
       if (!key)
         break;
-      XnmValueType type = va_arg(ap, XnmValueType);
+      XnmValueGetType type = va_arg(ap, XnmValueGetType);
       switch (type)
         {
         case XNM_GET_INT8 :
@@ -632,7 +631,7 @@ xnm_value_get_values(XnmValue *xnm_value,
           xnm_value_get_uint8(xnm_value,
                               key,
                               /* output */
-                              va_arg(ap, gint8*));
+                              va_arg(ap, guint8*));
           break;
         case XNM_GET_UINT16 :
           xnm_value_get_int16(xnm_value,
@@ -644,7 +643,7 @@ xnm_value_get_values(XnmValue *xnm_value,
           xnm_value_get_int32(xnm_value,
                               key,
                               /* output */
-                              va_arg(ap, guint32*));
+                              va_arg(ap, gint32*));
           break;
         case XNM_GET_INT64 :
           xnm_value_get_int64(xnm_value,

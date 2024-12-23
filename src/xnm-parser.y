@@ -19,7 +19,7 @@
  * Boston, MA 02111-1307, USA.
  *
  */
-%define api.prefix "xnm"
+%define api.prefix {xnm}
 %{
 #include <math.h>
 #include <stdlib.h>
@@ -289,8 +289,7 @@ int yylex ()
             g_string_append_c(gs, c);
         }
       
-      lex_string = gs->str;
-      g_string_free(gs, FALSE);
+      lex_string = g_string_free(gs, FALSE);
 
       return STRING;
     }
@@ -309,8 +308,7 @@ int yylex ()
         g_string_append_c(gs, ch);
       xnm_ungetch();
 
-      lex_string = gs->str;
-      g_string_free(gs, FALSE);
+      lex_string = g_string_free(gs, FALSE);
 
       /* printf("ID: lex_string = %s\n", lex_string); */
       
