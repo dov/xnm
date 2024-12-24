@@ -247,7 +247,7 @@ char *xnm_value_export_to_xml (XnmValue *xnm_value)
 XnmString * xnm_string_new(const char *string)
 {
   XnmString *xnm_string = g_new(XnmString, 1);
-  xnm_string->string = strdup(string);
+  xnm_string->string = g_strdup(string);
 #ifdef DEBUG_REF
   xnm_string->ref_count = 0;
   xnm_string_ref(xnm_string);
@@ -880,7 +880,7 @@ int xnm_key_split(const char *key_string,
     if (colon_pos == NULL)
       {
 	*is_leaf=TRUE;
-	*key_head = strdup(key_string);
+	*key_head = g_strdup(key_string);
 	*key_tail = NULL;
       }
     else

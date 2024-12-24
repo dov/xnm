@@ -271,7 +271,7 @@ int yylex ()
 
   if (lex_string)
     {
-      free(lex_string);
+      g_free(lex_string);
       lex_string = NULL;
     }
 

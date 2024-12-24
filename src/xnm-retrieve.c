@@ -33,7 +33,7 @@ int xnm_value_get (XnmValue *xnm_value_tree,
                    XnmValue **xnm_value)
 {
   int ret = 0;
-  char *key_head, *key_tail;
+  gchar *key_head, *key_tail;
   gboolean is_leaf, is_array;
 
   // Getting an empty key is a noop
